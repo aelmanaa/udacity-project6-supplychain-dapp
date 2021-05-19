@@ -1,4 +1,5 @@
-pragma solidity ^0.4.24;
+// SPDX-License-Identifier: MIYA
+pragma solidity >=0.8.0;
 
 /**
  * @title Roles
@@ -14,7 +15,7 @@ library Roles {
    */
   function add(Role storage role, address account) internal {
     require(account != address(0));
-    require(!has(role, account));
+    require(!has(role, account), 'Has already this role!');
 
     role.bearer[account] = true;
   }
