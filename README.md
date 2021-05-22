@@ -12,6 +12,22 @@ The DApp User Interface when running should look like...
 
 ![truffle test](images/ftc_transaction_history.png)
 
+## UML diagrams
+
+### Actors
+
+* Farmer: harvest , process, package & sells to a distributor
+* Distributor: ships the product to the retailer
+* Retailer: Mark product as received from distributor then sells the product to a consumer
+* Consumer: purchase the product
+
+### State diagram
+
+![State-diagram](images/state-diagram.png)
+
+### Class diagram
+
+![Class-diagram](images/class-diagram.png)
 
 ## Getting Started
 
