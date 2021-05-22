@@ -344,17 +344,42 @@ contract('SupplyChain', function (accounts) {
         })
 
         describe('addition tests', () => {
+            let tx1, tx2, tx3, tx4, tx5, tx6, tx7, tx8
 
             beforeEach(async () => {
-                await supplyChain.harvestItem(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, originFarmLongitude, productNotes, { from: originFarmerID })
-                await supplyChain.processItem(upc, { from: originFarmerID })
-                await supplyChain.packItem(upc, { from: originFarmerID })
-                await supplyChain.sellItem(upc, productPrice, { from: originFarmerID })
-                await supplyChain.buyItem(upc, { from: distributorID, value: web3.utils.toWei('2', "ether") })
-                await supplyChain.shipItem(upc, { from: distributorID })
-                await supplyChain.receiveItem(upc, { from: retailerID })
-                await supplyChain.purchaseItem(upc, { from: consumerID, value: web3.utils.toWei('2', "ether") })
+                let res1 = await supplyChain.harvestItem(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, originFarmLongitude, productNotes, { from: originFarmerID })
+                tx1 = res1.tx
+                await supplyChain.recordHistory(upc, tx1, { from: originFarmerID })
+
+                let res2 = await supplyChain.processItem(upc, { from: originFarmerID })
+                tx2 = res2.tx
+                await supplyChain.recordHistory(upc, tx2, { from: originFarmerID })
+
+                let res3 = await supplyChain.packItem(upc, { from: originFarmerID })
+                tx3 = res3.tx
+                await supplyChain.recordHistory(upc, tx3, { from: originFarmerID })
+
+                let res4 = await supplyChain.sellItem(upc, productPrice, { from: originFarmerID })
+                tx4 = res4.tx
+                await supplyChain.recordHistory(upc, tx4, { from: originFarmerID })
+
+                let res5 = await supplyChain.buyItem(upc, { from: distributorID, value: web3.utils.toWei('2', "ether") })
+                tx5 = res5.tx
+                await supplyChain.recordHistory(upc, tx5, { from: distributorID })
+
+                let res6 = await supplyChain.shipItem(upc, { from: distributorID })
+                tx6 = res6.tx
+                await supplyChain.recordHistory(upc, tx6, { from: distributorID })
+
+                let res7 = await supplyChain.receiveItem(upc, { from: retailerID })
+                tx7 = res7.tx
+                await supplyChain.recordHistory(upc, tx7, { from: retailerID })
+
+                let res8 = await supplyChain.purchaseItem(upc, { from: consumerID, value: web3.utils.toWei('2', "ether") })
+                tx8 = res8.tx
+                await supplyChain.recordHistory(upc, tx8, { from: consumerID })
             })
+
 
             // 9th Test
             it("Testing smart contract function fetchItemBufferOne() that allows anyone to fetch item details from blockchain", async () => {
@@ -403,6 +428,22 @@ contract('SupplyChain', function (accounts) {
                 expect(resultBufferTwo[2].toString(), 'Error: Invalid productID').to.equal(productID.toString())
 
 
+            })
+
+            // 12 test all transactions have been recorded
+            it("Testing that all transactionas have been recorded", async () => {
+
+                let transactionHistory = await supplyChain.getItemHistory(upc)
+
+                expect(transactionHistory.length, 'Transaction history must contain exactly one element').to.equal(8)
+                expect(transactionHistory.includes(tx1), 'Transaction not found in history').to.equal(true)
+                expect(transactionHistory.includes(tx2), 'Transaction not found in history').to.equal(true)
+                expect(transactionHistory.includes(tx3), 'Transaction not found in history').to.equal(true)
+                expect(transactionHistory.includes(tx4), 'Transaction not found in history').to.equal(true)
+                expect(transactionHistory.includes(tx5), 'Transaction not found in history').to.equal(true)
+                expect(transactionHistory.includes(tx6), 'Transaction not found in history').to.equal(true)
+                expect(transactionHistory.includes(tx7), 'Transaction not found in history').to.equal(true)
+                expect(transactionHistory.includes(tx8), 'Transaction not found in history').to.equal(true)
             })
 
         })

@@ -151,6 +151,12 @@ contract SupplyChain {
         _;
     }
 
+    // Define a modifier that checks that the state is valid
+    modifier notNone(uint256 _upc) {
+        require(items[_upc].itemState != State.None, "State must be valid");
+        _;
+    }
+
     // Define a modifier that checks if an item.state of a upc is Harvested
     modifier harvested(uint256 _upc) {
         require(
@@ -213,6 +219,15 @@ contract SupplyChain {
         require(
             items[_upc].itemState == State.Purchased,
             "State must be purchased"
+        );
+        _;
+    }
+
+    modifier validRecordHistory(uint256 _upc, string memory transactionHash) {
+        require(_upc > 0, "UPC not valid");
+        require(
+            bytes(transactionHash).length > 0,
+            "Transaction hash cannot be empty"
         );
         _;
     }
@@ -576,5 +591,23 @@ contract SupplyChain {
     // owner can renounce ownership
     function renounceOwnership() public onlyOwner() {
         ownable.renounceOwnership(msg.sender);
+    }
+
+    // allow a participant to append the transaction history hash. can only be done by current item owner
+    function recordHistory(uint256 _upc, string memory transactionHash)
+        public
+        validRecordHistory(_upc, transactionHash)
+        notNone(_upc)
+        verifyCaller(items[_upc].ownerID)
+    {
+        itemsHistory[_upc].push(transactionHash);
+    }
+
+    function getItemHistory(uint256 _upc)
+        public
+        view
+        returns (string[] memory history)
+    {
+        history = itemsHistory[_upc];
     }
 }

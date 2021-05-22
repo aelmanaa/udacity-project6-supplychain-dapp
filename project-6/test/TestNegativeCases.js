@@ -180,4 +180,38 @@ contract('NegativeCases', (accounts) => {
         })
     })
 
+    describe("Test record transaction history", () => {
+        it("History is empty at the beginning", async () => {
+            let transactionHistory = await supplyChain.getItemHistory(upc)
+            expect(transactionHistory.length, 'Transaction history should be empty').to.equal(0)
+
+        })
+
+        it("History cannot be recorded for non existant upc", async () => {
+            await expectRevert(supplyChain.recordHistory(10, 'test'), 'State must be valid')
+        })
+
+        it("History cannot be recorded for wrong upc value", async () => {
+            await expectRevert(supplyChain.recordHistory(0, 'test'), 'UPC not valid')
+        })
+
+        it("History cannot be recorded for empty transaction hash", async () => {
+            await expectRevert(supplyChain.recordHistory(10, ''), 'Transaction hash cannot be empty')
+        })
+
+        it("History cannot be recorded by non item owner", async () => {
+            let result = await supplyChain.harvestItem(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, originFarmLongitude, productNotes, { from: originFarmerID })
+            await expectRevert(supplyChain.recordHistory(upc, 'test', { from: distributorID }), 'Caller not allowed to call this function')
+            // Farmer can record hash
+            await supplyChain.recordHistory(upc, result.tx, { from: originFarmerID })
+            let transactionHistory = await supplyChain.getItemHistory(upc)
+
+            expect(transactionHistory.length, 'Transaction history must contain exactly one element').to.equal(1)
+            expect(transactionHistory[0], 'Transaction history must contain the previous transaction hash').to.equal(result.tx)
+        })
+
+
+
+    })
+
 })
