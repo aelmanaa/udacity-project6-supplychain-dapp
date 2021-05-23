@@ -29,6 +29,10 @@ The DApp User Interface when running should look like...
 
 ![Activity-diagram](images/activity-diagram.png)
 
+### Sequence diagram
+
+![Sequence-diagram](images/udacity-coffee-supplychain.svg)
+
 ### Class diagram
 
 ![Class-diagram](images/class-diagram.png)
