@@ -25,6 +25,11 @@ The DApp User Interface when running should look like...
 
 ![State-diagram](images/state-diagram.png)
 
+
+### Activity diagram
+
+![Activity-diagram](images/activity-diagram.png)
+
 ### Class diagram
 
 ![Class-diagram](images/class-diagram.png)
