@@ -30,26 +30,19 @@ let App = {
     web3Provider: null,
     web3: null,
     meta: null,
-    contracts: {},
-    emptyAddress: "0x0000000000000000000000000000000000000000",
-    sku: 0,
-    upc: 0,
     metamaskAccountID: "0x0000000000000000000000000000000000000000",
-    ownerID: "0x0000000000000000000000000000000000000000",
-    originFarmerID: "0x0000000000000000000000000000000000000000",
-    originFarmName: null,
-    originFarmInformation: null,
-    originFarmLatitude: null,
-    originFarmLongitude: null,
-    productNotes: null,
-    productPrice: 0,
-    distributorID: "0x0000000000000000000000000000000000000000",
-    retailerID: "0x0000000000000000000000000000000000000000",
-    consumerID: "0x0000000000000000000000000000000000000000",
-
     init: async function () {
         /// Setup access to blockchain
         await App.initWeb3()
+        await App.initSupplyChain()
+        await App.getMetaskAccountID()
+        window.ethereum.on('accountsChanged', App.getMetaskAccountID)
+
+        // button events
+        App.bindEvents()
+
+        // Get the tab with id="defaultOpen" and click on it
+        $("#defaultOpen").click();
     },
 
     initWeb3: async function () {
@@ -72,11 +65,6 @@ let App = {
         }
 
         App.web3 = new Web3(App.web3Provider)
-
-        await App.initSupplyChain()
-        App.getMetaskAccountID();
-
-        window.ethereum.on('accountsChanged', App.getMetaskAccountID);
     },
 
     getMetaskAccountID: async function () {
@@ -115,13 +103,7 @@ let App = {
             console.error("Could not connect to contract or chain.", error)
             return
         }
-
-
-        // await App.fetchItemBufferOne()
-        // await App.fetchItemBufferTwo()
         await App.fetchEvents()
-
-        App.bindEvents()
     },
 
     bindEvents: function () {
@@ -131,6 +113,15 @@ let App = {
     handleButtonClick: async function (event) {
         let className = $(event.target).attr('class')
         switch (className) {
+            case 'tablink':
+                event.preventDefault()
+                let name =  $(event.target).attr('name')
+                $('.tabcontent').css('display', 'none')
+
+                $('#'+name).css('display', 'block')
+                //$(elementId).style.display = "block"
+                break
+
             case 'supply-chain':
                 event.preventDefault()
                 let processId = parseInt($(event.target).data('id'))
@@ -436,8 +427,6 @@ let App = {
 $(window).on('load', function () {
 
     App.init();
-    // Get the element with id="defaultOpen" and click on it
-    document.getElementById("defaultOpen").click();
 })
 
 

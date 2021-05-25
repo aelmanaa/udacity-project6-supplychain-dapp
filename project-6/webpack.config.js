@@ -4,10 +4,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const webpack = require("webpack");
 
 module.exports = {
-    //mode: 'production',
+    mode: 'production',
     entry: {
-       app: './src/js/app.js',
-       tab: './src/js/tab.js'
+       app: './src/js/app.js'
 
     },
     output: {
