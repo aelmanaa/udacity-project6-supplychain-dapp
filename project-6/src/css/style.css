@@ -64,3 +64,8 @@ button {
 .horizontal-rule {
   background-color:#BDBDBD;
 }
+
+.product-overview p{
+  display: inline-block;
+  width:20%;
+}
