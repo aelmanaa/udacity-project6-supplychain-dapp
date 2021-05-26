@@ -12,15 +12,18 @@ module.exports = {
   networks: {
     development: {
       host: "127.0.0.1",
-      port: 8545,
-      network_id: "*" // Match any network id
+      port: 7545,
+      network_id: "*", // Match any network id
+      gas: 6300000
     },
     rinkeby: {
       provider: () => new HDWalletProvider({
         privateKeys: privateKeys.split(','),
         providerOrUrl: `https://rinkeby.infura.io/v3/${infuraKey}`
       }),
-      network_id: 4     // Rinkeby's id
+      network_id: 4,     // Rinkeby's id
+      gas: 6300000
+       
     }
   },
   compilers: {
