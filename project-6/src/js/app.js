@@ -48,6 +48,7 @@ let App = {
     initWeb3: async function () {
         /// Find or Inject Web3 Provider
         /// Modern dapp browsers...
+        console.log(window.ethereum)
         if (window.ethereum) {
             App.web3Provider = window.ethereum;
             try {
@@ -61,7 +62,7 @@ let App = {
         }
         // If no injected web3 instance is detected, fall back to Ganache
         else {
-            App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
+           throw new Error('Metamask not installed')
         }
 
         App.web3 = new Web3(App.web3Provider)
